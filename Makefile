@@ -6,7 +6,7 @@
 #    By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/11 19:13:32 by fborroto          #+#    #+#              #
-#    Updated: 2023/10/11 19:13:33 by fborroto         ###   ########.fr        #
+#    Updated: 2023/11/12 19:03:14 by fborroto         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ MAIN_SRC = src/*.c
 
 OBJ = *.o
 
-CC = gcc
+CC = gcc -fsanitize=thread
 
 CFLAGS = -Wall -Wextra -Werror
 
@@ -29,7 +29,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "     - Compiling $(NAME)..." 
-	@${CC} -pthread -lpthread $(FLAGS) $(OBJ) -o $(NAME)
+	@${CC} -pthread -lpthread $(CFLAGS) $(OBJ) -o $(NAME)
 	@echo "- Compiled -"
 	@${RM} $(OBJ)
 	
@@ -39,7 +39,7 @@ $(OBJ): $(SRCS)
 
 exe: all
 	@echo "     - Executing $(NAME)..."
-	@./$(NAME)  5 800 200 200 7
+	@./$(NAME)  5 600 200 200 7
 	@echo "     - Done -"
 
 leaks: all

@@ -6,10 +6,9 @@
 /*   By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:13:04 by fborroto          #+#    #+#             */
-/*   Updated: 2023/10/11 19:13:05 by fborroto         ###   ########.fr       */
+/*   Updated: 2023/11/12 19:01:01 by fborroto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "philosophers.h"
 
@@ -45,13 +44,13 @@ t_philosophers_info	*init_info(char **argv)
 	t_philosophers_info	*info;
 
 	info = (t_philosophers_info *)malloc(sizeof(t_philosophers_info));
-	pthread_mutex_init(&info->check_lock, NULL);
-	pthread_mutex_init(&info->death_lock, NULL);
 	info->number_of_philosophers = ft_atoi(argv[1]);
 	info->time_to_die = ft_atoi(argv[2]);
 	info->time_to_eat = ft_atoi(argv[3]);
 	info->time_to_sleep = ft_atoi(argv[4]);
-	info->died = 0;
+	info->end = false;
+	info->all_eat = 0;
+	pthread_mutex_init(&info->monitoring_mutex, NULL);
 	if (argv[5] != 0)
 	{
 		info->each_philo_must_eat = ft_atoi(argv[5]);
@@ -67,13 +66,11 @@ static t_platone	*platone_friends(t_platone *friends, int i)
 {
 	friends->index = i;
 	pthread_mutex_init(&friends->time_lock, NULL);
-	pthread_mutex_init(&friends->dead_lock, NULL);
 	pthread_mutex_init(&friends->fork_lock, NULL);
 	pthread_mutex_init(&friends->meal_lock, NULL);
-	friends->state = ALIVE;
 	friends->last_meal = ft_get_time();
-	friends->n_meals = 0;
 	friends->time_start = ft_get_time();
+	friends->n_meals = 0;
 	return (friends);
 }
 
@@ -107,13 +104,5 @@ t_platone	*init_platones(t_philosophers_info *info)
 
 bool	is_nietzsche_lonely(t_platone *nietzsche)
 {
-	if (nietzsche->info->number_of_philosophers == 1)
-	{
-		while (dead_platone(nietzsche))
-		{
-			nietzsche->info->number_of_philosophers = 1;
-		}
-		return (true);
-	}
 	return (false);
 }

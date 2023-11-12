@@ -6,10 +6,9 @@
 /*   By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:12:57 by fborroto          #+#    #+#             */
-/*   Updated: 2023/10/11 19:12:58 by fborroto         ###   ########.fr       */
+/*   Updated: 2023/11/12 18:52:22 by fborroto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
@@ -21,11 +20,15 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-enum					e_state
+typedef enum					e_state
 {
-	ALIVE = 0,
-	DEAD = 1,
-};
+	DEAD,
+	EAT,
+	THINK,
+	SLEEP,
+	FORK,
+	DROP,
+}						t_e_state;
 
 typedef struct s_philosophers_info
 {
@@ -34,9 +37,9 @@ typedef struct s_philosophers_info
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					each_philo_must_eat;
-	int					died;
-	pthread_mutex_t		death_lock;
-	pthread_mutex_t		check_lock;
+	int					all_eat;
+	pthread_mutex_t		monitoring_mutex;
+	bool				end;
 }						t_philosophers_info;
 
 typedef struct s_platone
@@ -45,10 +48,8 @@ typedef struct s_platone
 	unsigned long		last_meal;
 	unsigned long		time_start;
 	int					n_meals;
-	int					state;
 	pthread_mutex_t		fork_lock;
 	pthread_mutex_t		time_lock;
-	pthread_mutex_t		dead_lock;
 	pthread_mutex_t		meal_lock;
 	struct s_platone	*next;
 	pthread_t			newthread;
@@ -66,11 +67,12 @@ void					exit_prog(void);
 int						all_philo_full(t_platone *philo);
 void					print_state(char *str, t_platone *philo);
 void					destory_all(t_platone *philo);
-bool					dead_platone(t_platone *philo);
+bool					_platone(t_platone *philo);
 void					ft_eating(t_platone *philo);
 void					ft_end(t_platone *philo);
 bool					all_have_eat(t_platone *philo);
-bool					dead_philo(t_platone *philo);
+bool					_philo(t_platone *philo);
 void					free_list(t_platone **philo);
+void					monitoring(t_platone *philo, t_e_state event_id);
 bool					is_nietzsche_lonely(t_platone *nietzsche);
 #endif
