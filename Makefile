@@ -6,7 +6,7 @@
 #    By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/11 19:13:32 by fborroto          #+#    #+#              #
-#    Updated: 2023/11/12 19:03:14 by fborroto         ###   ########.fr        #
+#    Updated: 2023/11/22 14:46:15 by fborroto         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ MAIN_SRC = src/*.c
 
 OBJ = *.o
 
-CC = gcc -fsanitize=thread
+CC = gcc #-fsanitize=thread
 
 CFLAGS = -Wall -Wextra -Werror
 
@@ -39,7 +39,7 @@ $(OBJ): $(SRCS)
 
 exe: all
 	@echo "     - Executing $(NAME)..."
-	@./$(NAME)  5 600 200 200 7
+	@./$(NAME)   4 410 200 200
 	@echo "     - Done -"
 
 leaks: all
@@ -59,3 +59,5 @@ clean:
 
 fclean: clean
 	@${RM} ${NAME}
+
+re: fclean all

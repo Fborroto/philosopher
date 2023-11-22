@@ -6,7 +6,7 @@
 /*   By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:12:49 by fborroto          #+#    #+#             */
-/*   Updated: 2023/11/12 18:49:02 by fborroto         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:51:29 by fborroto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,13 @@ void	*philo_routine(void *t_arg)
 	t_platone	*philo;
 
 	philo = (t_platone *)t_arg;
-	if (is_nietzsche_lonely(philo))
+	while (philo->info->number_of_philosophers == 1)
+	{
+		monitoring(philo, FORK);
 		return (NULL);
-	if (philo->index % 2 != 0)
-		usleep(15000);
+	}
+	// if (philo->index % 2 != 0)
+	// 	usleep(15000);
 	while (true)
 	{
 		pthread_mutex_lock(&philo->info->monitoring_mutex);
@@ -34,8 +37,8 @@ void	*philo_routine(void *t_arg)
 		monitoring(philo, SLEEP);
 		usleep(philo->info->time_to_sleep * 1000);
 		monitoring(philo, THINK);
+	//usleep(200);
 	}
-	return (NULL);
 }
 
 static void	create_threads(t_philosophers_info *info, t_platone *philo)
@@ -60,6 +63,25 @@ static void	join_threads(t_philosophers_info *info, t_platone *philo)
 	{
 		pthread_join(philo->newthread, NULL);
 		philo = philo->next;
+		i++;
+	}
+}
+
+void	free_list(t_platone **philo)
+{
+	int			i;
+	int			d;
+	t_platone	*tmp;
+
+	i = 0;
+	d = (*philo)->info->number_of_philosophers;
+	pthread_mutex_destroy(&(*philo)->info->monitoring_mutex);
+	while (i < d)
+	{
+		tmp = (*philo);
+		pthread_mutex_destroy(&(*philo)->fork_lock);
+		(*philo) = (*philo)->next;
+		free(tmp);
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:12:57 by fborroto          #+#    #+#             */
-/*   Updated: 2023/11/12 18:52:22 by fborroto         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:43:38 by fborroto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef enum					e_state
+typedef enum e_state
 {
 	DEAD,
 	EAT,
@@ -49,8 +49,6 @@ typedef struct s_platone
 	unsigned long		time_start;
 	int					n_meals;
 	pthread_mutex_t		fork_lock;
-	pthread_mutex_t		time_lock;
-	pthread_mutex_t		meal_lock;
 	struct s_platone	*next;
 	pthread_t			newthread;
 	t_philosophers_info	*info;

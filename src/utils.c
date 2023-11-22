@@ -6,7 +6,7 @@
 /*   By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:13:04 by fborroto          #+#    #+#             */
-/*   Updated: 2023/11/12 19:01:01 by fborroto         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:35:51 by fborroto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,7 @@ t_philosophers_info	*init_info(char **argv)
 static t_platone	*platone_friends(t_platone *friends, int i)
 {
 	friends->index = i;
-	pthread_mutex_init(&friends->time_lock, NULL);
 	pthread_mutex_init(&friends->fork_lock, NULL);
-	pthread_mutex_init(&friends->meal_lock, NULL);
 	friends->last_meal = ft_get_time();
 	friends->time_start = ft_get_time();
 	friends->n_meals = 0;

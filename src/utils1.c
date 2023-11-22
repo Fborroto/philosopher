@@ -6,7 +6,7 @@
 /*   By: fborroto <fborroto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:13:10 by fborroto          #+#    #+#             */
-/*   Updated: 2023/11/12 18:47:13 by fborroto         ###   ########.fr       */
+/*   Updated: 2023/11/22 14:37:27 by fborroto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,27 +31,50 @@ unsigned long	ft_get_time(void)
 	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
 
-void	print_state(char *str, t_platone *philo)
+static void	pick_forks(t_platone *philo)
 {
-	pthread_mutex_lock(&philo->time_lock);
-	printf("%zu %i %s", ft_get_time() - philo->time_start, philo->index, str);
-	pthread_mutex_unlock(&philo->time_lock);
+	if (philo->index % 2 == 0)
+	{
+		pthread_mutex_lock(&philo->fork_lock);
+		monitoring(philo, FORK);
+		pthread_mutex_lock(&philo->next->fork_lock);
+		monitoring(philo, FORK);
+	}
+	else
+	{
+		pthread_mutex_lock(&philo->next->fork_lock);
+		monitoring(philo, FORK);
+		pthread_mutex_lock(&philo->fork_lock);
+		monitoring(philo, FORK);
+	}
+}
+
+static void	drop_forks(t_platone *philo)
+{
+	if (philo->index % 2 == 0)
+	{
+		pthread_mutex_unlock(&philo->fork_lock);
+		monitoring(philo, DROP);
+		pthread_mutex_unlock(&philo->next->fork_lock);
+		monitoring(philo, DROP);
+	}
+	else
+	{
+		pthread_mutex_unlock(&philo->next->fork_lock);
+		monitoring(philo, DROP);
+		pthread_mutex_unlock(&philo->fork_lock);
+		monitoring(philo, DROP);
+	}
 }
 
 void	ft_eating(t_platone *philo)
 {
-	pthread_mutex_lock(&philo->fork_lock);
-	monitoring(philo, FORK);
-	pthread_mutex_lock(&philo->next->fork_lock);
-	monitoring(philo, FORK);
+	pick_forks(philo);
+	monitoring(philo, EAT);
 	pthread_mutex_lock(&philo->info->monitoring_mutex);
 	philo->last_meal = ft_get_time();
 	philo->n_meals++;
 	pthread_mutex_unlock(&philo->info->monitoring_mutex);
-	monitoring(philo, EAT);
 	usleep(philo->info->time_to_eat * 1000);
-	pthread_mutex_unlock(&philo->fork_lock);
-	pthread_mutex_unlock(&philo->next->fork_lock);
+	drop_forks(philo);
 }
-
-
